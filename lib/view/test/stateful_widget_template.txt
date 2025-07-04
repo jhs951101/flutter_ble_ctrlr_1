@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class TestPage extends StatelessWidget {
+  TestPage({super.key});
+
+  final _controller = Get.put(TestController());
+
+  @override
+  Widget build(BuildContext context) {
+    // fill in
+  }
+}
+
+class TestController extends GetxController {
+  //
+}
