@@ -11,9 +11,7 @@ class Test2Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       title: '테스트2',
-      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        top: false,
         child: Column(
           children: [
             //

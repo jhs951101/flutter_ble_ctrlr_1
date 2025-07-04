@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomScaffold extends StatelessWidget {
-  final void Function()? onTap;
-  final void Function()? onTapAppBar;
-  final void Function()? onScrollTop;
-  final String? title;
-  final bool canPop;
-  final bool isLoading;
-  final bool isFullscreen;
-  final bool hasAppBar;
-  final bool resizeToAvoidBottomInset;
-  final ScrollController? scrollController;
-  final Widget? titleWidget;
-  final Widget? positioned;
-  final Color backgroundColor;
-  final Widget body;
-  final List<Widget>? actions;
+  void Function()? onTap;
+  void Function()? onTapAppBar;
+  void Function()? onScrollTop;
+  String? title;
+  bool canPop;
+  bool isLoading;
+  bool isFullscreen;
+  bool hasAppBar;
+  bool resizeToAvoidBottomInset;
+  ScrollController? scrollController;
+  Widget? titleWidget;
+  Widget? positioned;
+  Color backgroundColor;
+  Widget body;
+  List<Widget>? actions;
 
-  const CustomScaffold({
+  CustomScaffold({
     super.key,
     this.onTap,
     this.onTapAppBar,
@@ -29,7 +29,7 @@ class CustomScaffold extends StatelessWidget {
     this.isLoading = false,
     this.isFullscreen = false,
     this.hasAppBar = true,
-    this.resizeToAvoidBottomInset = false,
+    this.resizeToAvoidBottomInset = true,
     this.scrollController,
     this.titleWidget,
     this.positioned,

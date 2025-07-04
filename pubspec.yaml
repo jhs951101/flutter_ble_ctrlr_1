@@ -38,6 +38,9 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   flutter_localization: ^0.3.3
   permission_handler: ^12.0.1
+  gap: ^3.0.1
+  flutter_reactive_ble: ^5.4.0
+  flutter_svg: ^2.2.0
 
 dev_dependencies:
   flutter_test:

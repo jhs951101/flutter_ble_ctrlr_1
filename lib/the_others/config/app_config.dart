@@ -6,7 +6,9 @@ class AppConfig {
   AppConfig._internal();
 
   static final AppConfig _instance = AppConfig._internal();
-  //final num version = 1.0;
+  
+  final String defaultValue_dropdownButton = '선택하세요';
+  final String defaultValue_dropdownButton_short = '미선택';
 
   final List<Permission> essentialPermissions = [
     Permission.bluetooth,
@@ -15,6 +17,7 @@ class AppConfig {
   ];
   
   /*
+  final num version = 1.0;
   static const String originalDomain = 'https://test.mycafe24.com/';
   static const String serverDomain = originalDomain + 'server/';
 

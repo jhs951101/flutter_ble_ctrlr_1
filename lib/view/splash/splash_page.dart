@@ -12,24 +12,19 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Image.asset(
-                  'lib/the_others/asset/image/logo.png',
-                ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: SizedBox(
+              width: 120,
+              height: 120,
+              child: Image.asset(
+                'lib/the_others/asset/image/logo.png',
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -55,15 +50,11 @@ class SplashController extends GetxController {
   }
 
   void setTimer(){
-    goToNextView();
-    
-    /*
     timerController.executeAfter(
       (){
         goToNextView();
       },
-      5000
+      100
     );
-    */
   }
 }
