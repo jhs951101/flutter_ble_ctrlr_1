@@ -21,6 +21,45 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BodyItem(
+            child: NormalText(
+              title: 'BLE Controller 1',
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: CustomColor.black,
+            ),
+          ),
+          BodyItem(
+            top: 20,
+            child: Obx((){
+              String stateStr = '-';
+              Color color = Color(0xFFAAAAAA);
+              ConnectedState connectedState = _controller.connectedState.value;
+
+              if(connectedState == ConnectedState.Disconnected){
+                stateStr = '연결 안 됨';
+              }
+              else if(connectedState == ConnectedState.Connecting){
+                stateStr = '연결 중...';
+                color = Color(0xFF000000);
+              }
+              else if(connectedState == ConnectedState.Connected){
+                stateStr = '연결 완료!';
+                color = Color(0xFF0000FF);
+              }
+
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: NormalText(
+                  title: '상태: ${stateStr}',
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              );
+            }),
+          ),
+
+          BodyItem(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -43,10 +82,16 @@ class HomePage extends StatelessWidget {
               return CustomElevatedButton(
                 title: 'Connect',
                 onTap:
-                  _controller.connected.value
+                  _controller.connectedState.value == ConnectedState.Connected
                   ? null
                   : (){
-                    _controller.connected.value = true;  // 임시 방편
+                    _controller.bleController.connectBle(
+                      connectedState: _controller.connectedState,
+                      selectedOperationType: _controller.selectedOperationType,
+
+                      startNumber: _controller.selectedStartNumber.value,
+                      endNumber: _controller.selectedEndNumber.value,
+                    );
                   },
               );
             }),
@@ -59,7 +104,8 @@ class HomePage extends StatelessWidget {
           const Gap(10),
 
           Obx((){
-            bool connected = _controller.connected.value;
+            ConnectedState connectedState = _controller.connectedState.value;
+            String selectedOperationType = _controller.selectedOperationType.value;
 
             return Column(
               children: [
@@ -69,11 +115,12 @@ class HomePage extends StatelessWidget {
                       Flexible(
                         flex: 50,
                         child: CustomElevatedButton(
-                          title: 'LED Mode 1',
+                          title: 'A',
                           onTap:
-                            connected
-                            ? (){
-                              //
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'A'
+                            ? () async {
+                              await _controller.bleController.changeOperation('A');
                             }
                             : null,
                         ),
@@ -84,12 +131,13 @@ class HomePage extends StatelessWidget {
                       Flexible(
                         flex: 50,
                         child: CustomElevatedButton(
-                          title: 'LED Mode 2',
+                          title: 'B',
                           color: CustomColor.secondary,
                           onTap:
-                            connected
-                            ? (){
-                              //
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'B'
+                            ? () async {
+                              await _controller.bleController.changeOperation('B');
                             }
                             : null,
                         ),
@@ -99,13 +147,125 @@ class HomePage extends StatelessWidget {
                 ),
 
                 BodyItem(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'C',
+                          color: CustomColor.secondary,
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'C'
+                            ? () async {
+                              await _controller.bleController.changeOperation('C');
+                            }
+                            : null,
+                        ),
+                      ),
+
+                      const Gap(10),
+
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'D',
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'D'
+                            ? () async {
+                              await _controller.bleController.changeOperation('D');
+                            }
+                            : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                BodyItem(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'E',
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'E'
+                            ? () async {
+                              await _controller.bleController.changeOperation('E');
+                            }
+                            : null,
+                        ),
+                      ),
+
+                      const Gap(10),
+
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'F',
+                          color: CustomColor.secondary,
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'F'
+                            ? () async {
+                              await _controller.bleController.changeOperation('F');
+                            }
+                            : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                BodyItem(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'G',
+                          color: CustomColor.secondary,
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'G'
+                            ? () async {
+                              await _controller.bleController.changeOperation('G');
+                            }
+                            : null,
+                        ),
+                      ),
+
+                      const Gap(10),
+
+                      Flexible(
+                        flex: 50,
+                        child: CustomElevatedButton(
+                          title: 'H',
+                          onTap:
+                            connectedState == ConnectedState.Connected
+                              && selectedOperationType != 'H'
+                            ? () async {
+                              await _controller.bleController.changeOperation('H');
+                            }
+                            : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                BodyItem(
+                  top: 20,
                   child: CustomElevatedButton(
                     title: 'Disconnect',
                     color: Color(0xFF777777),
                     onTap:
-                      connected
-                      ? (){
-                        _controller.connected.value = false;  // 임시 방편
+                      connectedState == ConnectedState.Connected
+                      ? () async {
+                        await _controller.bleController.disconnect();
                       }
                       : null,
                   ),
@@ -120,11 +280,17 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeController extends GetxController {
-  final List<String> numbers = [AppConfig().defaultValue_dropdownButton, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',];
+  final List<String> numbers = [AppConfig().defaultValue_dropdownButton, '1', '2', '3', '4', '5', '6', '7', '8', '9',];
 
-  RxBool connected = false.obs;
+  Rx<ConnectedState> connectedState = ConnectedState.Disconnected.obs;
+  RxString selectedOperationType = ''.obs;
+
   RxString selectedStartNumber = AppConfig().defaultValue_dropdownButton.obs;
   RxString selectedEndNumber = AppConfig().defaultValue_dropdownButton.obs;
+
+  //
+
+  BleController bleController = BleController();
 
   //
 
@@ -137,8 +303,14 @@ class HomeController extends GetxController {
   //
 }
 
-class QrBleAuthenticator {
-  final int maxBytes_BLE = 20;
+enum ConnectedState {
+  Disconnected, Connecting, Connected,
+}
+
+class BleController {
+  final int maxBytes_ble = 20;
+  final String subUuidStr_service = '9B10000-E8F2-537E-4F6C-D104768A121';
+  final String subUuidStr_char = '9B10001-E8F2-537E-4F6C-D104768A121';
 
   late DiscoveredDevice device;
   late QualifiedCharacteristic rxChar;
@@ -147,30 +319,52 @@ class QrBleAuthenticator {
   
   //
 
-  bool connected = false;
-  FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
-
   String? deviceName;
   Uuid? serviceUuid;
   Uuid? charUuid;
 
-  Function(Map<String, dynamic>? data)? _onSuccess;
-  Function(String? errorMsg)? _onFailed;
+  Rx<ConnectedState>? _connectedState;
+  RxString? _selectedOperationType;
+
+  String? _startNumber;
+  String? _endNumber;
   
   //
   
   DialogController dialogController = DialogController();
+  FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
   
   //
 
-  void authenticateQrBle(
+  void connectBle(
     {
-      Function(Map<String, dynamic>? data)? onSuccess,
-      Function(String? message)? onFailed,
+      required Rx<ConnectedState> connectedState,
+      required RxString selectedOperationType,
+
+      required String startNumber,
+      required String endNumber,
     }
   ){
-    _onSuccess = onSuccess;
-    _onFailed = onFailed;
+    if(startNumber.contains('선택')){
+      dialogController.showAlertDialog(
+        title: '맨 앞 숫자 미선택',
+        contents: '맨 앞 숫자를 선택하십시오.'
+      );
+      return;
+    }
+    else if(endNumber.contains('선택')){
+      dialogController.showAlertDialog(
+        title: '맨 뒤 숫자 미선택',
+        contents: '맨 뒤 숫자를 선택하십시오.'
+      );
+      return;
+    }
+
+    _connectedState = connectedState;
+    _selectedOperationType = selectedOperationType;
+
+    _startNumber = startNumber;
+    _endNumber = endNumber;
 
     flutterReactiveBle.statusStream.listen(
       (status){
@@ -178,14 +372,39 @@ class QrBleAuthenticator {
           return;
         }
 
-        _authenticateQrBle_statusConfirmed(status);
+        _connectBle_statusConfirmed(status);
       },
     );
   }
 
-  void _authenticateQrBle_statusConfirmed(BleStatus status){
-    //print('--- status: ${status}');
+  Future<void> changeOperation(String type) async {
+    if(_connectedState == null){
+      return;
+    }
+    else if(_connectedState!.value != ConnectedState.Connected){
+      return;
+    }
 
+    _selectedOperationType!.value = type;
+    await _sendMessage('c_${type}');
+  }
+
+  Future<void> disconnect() async {
+    if(_connectedState == null){
+      return;
+    }
+    else if(_connectedState!.value != ConnectedState.Connected){
+      return;
+    }
+
+    await scanStream.cancel();
+    _sendMessage('d');
+    _connectedState!.value = ConnectedState.Disconnected;
+  }
+
+  //
+
+  void _connectBle_statusConfirmed(BleStatus status){
     if(status == BleStatus.unauthorized){
       dialogController.showAlertDialog(
         title: '블루투스 권한 미허용',
@@ -204,76 +423,44 @@ class QrBleAuthenticator {
       return;
     }
 
-    _authenticateQrBle_onReady();
+    _connectBle_onReady();
   }
 
-  void _authenticateQrBle_onReady(){
-    /*
-    Params.setParam('onDetect',
-      (){
-        onDetect();
-      }
-    );
+  void _connectBle_onReady(){
+    deviceName = "A";
+    serviceUuid = Uuid.parse(_startNumber! + subUuidStr_service + _endNumber!);
+    charUuid = Uuid.parse(_startNumber! + subUuidStr_char + _endNumber!);
 
-    Get.toNamed(RouteName().scan_qr);
-    */
+    _scanDevice();
   }
 
-  void onDetect(){
-    /*
-    Params.deleteParam('onDetect');
-    String? _deviceName = Params.getParam('deviceName');
-    String? _serviceUuidStr = Params.getParam('serviceUuidStr');
-    String? _charUuidStr = Params.getParam('charUuidStr');
-
-    if(
-      _deviceName == null
-      || _serviceUuidStr == null
-      || _charUuidStr == null
-    ){
-      print('error 8');
-      dialogController.showAlertDialog(
-        title: '미지원 OR 코드',
-        contents: '지원하지 않는 QR 코드입니다.'
-          + '\n' + '올바른 QR 코드를 스캔하십시오.',
-      );
+  void _scanDevice(){
+    if(_connectedState!.value == ConnectedState.Connected){
       return;
     }
 
-    deviceName = _deviceName;
-    serviceUuid = Uuid.parse(_serviceUuidStr);
-    charUuid = Uuid.parse(_charUuidStr);
-    scanDevice();
-    */
-  }
-
-  void scanDevice(){
-    if(connected){
-      return;
-    }
-
+    _connectedState!.value = ConnectedState.Connecting;
     scanStream = flutterReactiveBle.scanForDevices(withServices: [serviceUuid!]).listen((_device){
       if(_device.name == deviceName){
         device = _device;
-        connectToDevice();
+        _connectToDevice();
       }
     });
   }
 
-  void connectToDevice(){
+  void _connectToDevice(){
     connection = flutterReactiveBle.connectToDevice(id: device.id);
     connection.listen((update){
       if(update.connectionState == DeviceConnectionState.connected){
-        connected = true;
+        _selectedOperationType!.value = 'A';
+        _connectedState!.value = ConnectedState.Connected;
         rxChar = QualifiedCharacteristic(serviceId: serviceUuid!, characteristicId: charUuid!, deviceId: device.id);
-        receiveMessage();
-
-        sendMessage('a_abc');
+        _receiveMessage();
       }
     });
   }
 
-  void receiveMessage(){
+  void _receiveMessage(){
     flutterReactiveBle.subscribeToCharacteristic(rxChar).listen((data){
       String receivedMessage = utf8.decode(data).trim();
       print('Received: ${receivedMessage}');
@@ -294,81 +481,33 @@ class QrBleAuthenticator {
         return;
       }
 
-      // on failed
-      if(parts_reveivedMessage[1] == 'af'){
-        if(parts_reveivedMessage.length < 3){
-          return;
-        }
-
-        if(parts_reveivedMessage[2] == 'te'){
-          print('Error: 인증 시간 초과');
-        
-          if(_onFailed != null){
-            _onFailed!('timeExceeded_authenticating');
-          }
-        }
-        else if(parts_reveivedMessage[2] == 'wa'){
-          print('Error: 잘못된 인증 코드');
-
-          if(_onFailed != null){
-            _onFailed!('wrongAuth_authenticating');
-          }
-        }
-
-        sendMessage('d');
+      /*
+      if(parts_reveivedMessage[1] == 'a'){  // 'a'라는 명령 받으면
+        //
       }
-
-      // on issued
-      else if(parts_reveivedMessage[1] == 'as'){
-        print('인증 성공!');
-        _onIssued('success_authenticating');
+      else if(parts_reveivedMessage[1] == 'b'){
+        //
       }
-      else if(parts_reveivedMessage[1] == 'tf'){
-        if(parts_reveivedMessage.length < 3){
-          return;
-        }
-
-        if(parts_reveivedMessage[2] == 'te'){
-          print('Error: 쓰레기 투하 시간 초과');
-          _onIssued('timeExceeded_throwing');
-        }
-      }
-      else if(parts_reveivedMessage[1] == 'ts'){
-        print('쓰레기 투하 성공!');
-        _onIssued('success_throwing');
-      }
-
-      // on success
-      else if(parts_reveivedMessage[1] == 'ls'){
-        print('개폐기 잠금 성공!');
-
-        if(_onSuccess != null){
-          _onSuccess!(null);
-        }
-
-        sendMessage('d');
-      }
+      */
     });
   }
 
-  Future<void> sendMessage(String sendingMessage) async {
+  Future<void> _sendMessage(String sendingMessage) async {
     /*
     전송하는 문자열
-      "[P]_a_{authCode}_" : 스마트폰 인증을 위한 인증 번호 전송.
-
-      "[P]_t_" : 쓰레기 투하 실시. (일정 시간동안 쓰레기를 투하했는지 체크)
-      "[P]_l_" : 개폐기 잠금. (서보 모터를 움직여서 개폐기를 잠금)
-
-      "[P]_d_" : 블루투스 연결 종료.
+      "[P]_c_A_" : 아두이노 동작 방식 변경 (A~H)
     */
-    
-    if(!connected){
+
+    if(_connectedState == null){
+      return;
+    }
+    else if(_connectedState!.value != ConnectedState.Connected){
       return;
     }
 
     String clearStr = '';
 
-    for(int n=1; n<=maxBytes_BLE; n++){
+    for(int n=1; n<=maxBytes_ble; n++){
       clearStr += ' ';
     }
 
@@ -387,59 +526,5 @@ class QrBleAuthenticator {
     );
     
     print('Sent: ${realSendingMessage}');
-
-    if(sendingMessage == 'd'){
-      await scanStream.cancel();
-      connected = false;
-    }
-  }
-
-  //
-
-  void _onIssued(String? message){
-    if(message != null){
-      if(message == 'success_authenticating'){
-        dialogController.showAlertDialog(
-          title: '휴대폰 인증 성공',
-          contents: '정상 인증되었습니다.'
-            + '\n' + '확인을 누른 후'
-            + '\n' + '10초 안에 쓰레기를 넣으십시오.',
-          canPop: false,
-          barrierDismissible: false,
-          closeBtnPressed: (){
-            sendMessage('t');
-          }
-        );
-        return;
-      }
-      else if(message == 'timeExceeded_throwing'){
-        dialogController.showAlertDialog(
-          title: '쓰레기 인식 실패',
-          contents: '인식하지 못했습니다.'
-            + '\n' + '확인을 누른 후'
-            + '\n' + '10초 안에 쓰레기를 넣으십시오.',
-          canPop: false,
-          barrierDismissible: false,
-          closeBtnPressed: (){
-            sendMessage('t');
-          }
-        );
-        return;
-      }
-      else if(message == 'success_throwing'){
-        dialogController.showAlertDialog(
-          title: '쓰레기 인식 성공',
-          contents: '정상 인식하였습니다.'
-            + '\n' + '10초 안에 쓰레기통 문을 닫은 후'
-            + '\n' + '확인을 누르십시오.',
-          canPop: false,
-          barrierDismissible: false,
-          closeBtnPressed: (){
-            sendMessage('l');
-          }
-        );
-        return;
-      }
-    }
   }
 }
