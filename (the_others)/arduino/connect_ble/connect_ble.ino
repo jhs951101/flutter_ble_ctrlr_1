@@ -1,9 +1,9 @@
 #include <Servo.h>
 #include <ArduinoBLE.h>
 
-#define PIN_BASIC_LED1 3  // 3번 핀 - 기본 LED1
-#define PIN_BASIC_LED2 4  // 4번 핀 - 기본 LED2
-#define PIN_SERVO 6  // 6번 핀 - 서보 모터
+#define PIN_BASIC_LED1 2  // 핀 번호 - 기본 LED1
+#define PIN_BASIC_LED2 3  // 핀 번호 - 기본 LED2
+#define PIN_SERVO 6  // 핀 번호 - 서보 모터
 
 #define LOCAL_NAME "A"  // 기기명 (BLE 연결 시 쓰임)
 #define DEVICE_NAME "AD"  // 기기명
