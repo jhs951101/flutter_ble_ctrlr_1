@@ -1,9 +1,21 @@
 #include <Servo.h>
 #include <ArduinoBLE.h>
 
-#define PIN_BASIC_LED1 2  // 핀 번호 - 기본 LED1
-#define PIN_BASIC_LED2 3  // 핀 번호 - 기본 LED2
-#define PIN_SERVO 6  // 핀 번호 - 서보 모터
+//
+
+#define PIN_BASIC_LED_RED 2  // 핀 번호 - 빨강색 기본 LED
+#define PIN_BASIC_LED_GREEN 3  // 핀 번호 - 초록색 기본 LED
+
+#define PIN_RGB_LED_RED 5  // 핀 번호 - RGB LED - 빨강
+#define PIN_RGB_LED_GREEN 6  // 핀 번호 - RGB LED - 초록
+#define PIN_RGB_LED_BLUE 7  // 핀 번호 - RGB LED - 파랑
+
+#define PIN_SERVO 8  // 핀 번호 - 서보 모터
+
+#define PIN_DISTANCE_ECHO 10  // 핀 번호 - 거리 센서 - ECHO (INPUT)
+#define PIN_DISTANCE_TRIG 11  // 핀 번호 - 거리 센서 - ECHO (OUTPUT)
+
+//
 
 #define LOCAL_NAME "A"  // 기기명 (BLE 연결 시 쓰임)
 #define DEVICE_NAME "AD"  // 기기명
@@ -15,10 +27,12 @@
 #define UUID_SERVICE "19B10000-E8F2-537E-4F6C-D104768A1212"  // 연결을 관리하기 위한 UUID 중 일부 (맨 앞, 맨 뒤, 문자 제외)
 #define UUID_CHAR "19B10001-E8F2-537E-4F6C-D104768A1212"  // 문자를 주고 받기 위한 UUID 중 일부 (맨 앞, 맨 뒤, 문자 제외)
 
+//
+
 String operationType = "";
 char allowingChars[NUM_OF_ALLOWED_CHARS] = { ' ', '_', '[', ']' };
 
-Servo servo_cover;
+Servo mini_servo;
 BLEService customService(UUID_SERVICE);  // 연결을 관리하는 객체
 BLECharacteristic customCharacteristic(UUID_CHAR, BLERead | BLEWrite | BLENotify, MAX_BYTES_BLE);  // 문자를 주고 받는 객체
 
@@ -29,12 +43,21 @@ void setup(){
   Serial.begin(9600);
   while(!Serial);
   
-  // LED 세팅
-  pinMode(PIN_BASIC_LED1, OUTPUT);
-  pinMode(PIN_BASIC_LED2, OUTPUT);
+  // Basic LED 2개 세팅
+  pinMode(PIN_BASIC_LED_RED, OUTPUT);
+  pinMode(PIN_BASIC_LED_GREEN, OUTPUT);
+  
+  // RGB LED 세팅
+  pinMode(PIN_RGB_LED_RED, OUTPUT);
+  pinMode(PIN_RGB_LED_GREEN, OUTPUT);
+  pinMode(PIN_RGB_LED_BLUE, OUTPUT);
   
   // 서보 모터 세팅
-  servo_cover.attach(PIN_SERVO);
+  mini_servo.attach(PIN_SERVO);
+
+  // 거리 센서 세팅
+  pinMode(PIN_DISTANCE_TRIG, OUTPUT);
+  pinMode(PIN_DISTANCE_ECHO, INPUT);
 
   // BLE 세팅
   if(!BLE.begin()){
@@ -52,7 +75,8 @@ void setup(){
   Serial.println("BLE device is now advertising \n");
   BLE.advertise();
 
-  // 모두 초기화
+  // 동작 모두 초기화
+  operationType = "";
   initialize();
 }
 
@@ -97,41 +121,96 @@ void loop(){
 
   // BLE 연결 종료
   central.disconnect();
+  operationType = "";
   initialize();
   Serial.println("Disconnected from central: " + address + "\n");
 }
 
 //
 
-void initialize(){
-  operationType = "";
-  digitalWrite(PIN_BASIC_LED1, LOW);
-  digitalWrite(PIN_BASIC_LED2, LOW);
-  servo_cover.write(0);
+void initialize(){  // 동작 초기화 함수
+  mini_servo.write(0);
+
+  digitalWrite(PIN_BASIC_LED_RED, LOW);
+  digitalWrite(PIN_BASIC_LED_GREEN, LOW);
+
+  analogWrite(PIN_RGB_LED_RED, 0);
+  analogWrite(PIN_RGB_LED_GREEN, 0);
+  analogWrite(PIN_RGB_LED_BLUE, 0);
 }
 
-void execute(){
+void execute(){  // 설정한 동작 유형대로 실행하는 함수
   if(operationType == ""){
     return;
   }
+
+  initialize();
   
   if(operationType == "A"){
-    digitalWrite(PIN_BASIC_LED1, HIGH);
-    digitalWrite(PIN_BASIC_LED2, HIGH);
+    digitalWrite(PIN_BASIC_LED_RED, HIGH);
+    digitalWrite(PIN_BASIC_LED_GREEN, HIGH);
   }
   else if(operationType == "B"){
-    digitalWrite(PIN_BASIC_LED1, HIGH);
-    digitalWrite(PIN_BASIC_LED2, LOW);
-    delay(100);
+    long distanceCm = getDistanceCm();
 
-    digitalWrite(PIN_BASIC_LED1, LOW);
-    digitalWrite(PIN_BASIC_LED2, HIGH);
-    delay(100);
+    if(distanceCm < 10){  // 거리 센서의 10cm 이내에 물체가 있으면
+      analogWrite(PIN_RGB_LED_RED, 255);
+      analogWrite(PIN_RGB_LED_GREEN, 0);
+      analogWrite(PIN_RGB_LED_BLUE, 0);
+      delay(100);
+
+      analogWrite(PIN_RGB_LED_RED, 0);
+      analogWrite(PIN_RGB_LED_GREEN, 255);
+      analogWrite(PIN_RGB_LED_BLUE, 0);
+      delay(100);
+
+      analogWrite(PIN_RGB_LED_RED, 0);
+      analogWrite(PIN_RGB_LED_GREEN, 0);
+      analogWrite(PIN_RGB_LED_BLUE, 255);
+      delay(100);
+    }
+    else{
+      digitalWrite(PIN_BASIC_LED_RED, HIGH);
+      digitalWrite(PIN_BASIC_LED_GREEN, LOW);
+      delay(100);
+
+      digitalWrite(PIN_BASIC_LED_RED, LOW);
+      digitalWrite(PIN_BASIC_LED_GREEN, HIGH);
+      delay(100);
+    }
+  }
+  else if(operationType == "C"){
+    mini_servo.write(10);
+    delay(500);
+
+    mini_servo.write(20);
+    delay(500);
+
+    mini_servo.write(30);
+    delay(500);
+
+    mini_servo.write(0);
+    delay(500);
   }
 }
 
+long getDistanceCm(){  // 거리 센서와의 거리 구하는 함수
+  long result = -1;
+  digitalWrite(PIN_DISTANCE_TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(PIN_DISTANCE_TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(PIN_DISTANCE_TRIG, LOW);
+
+  long duration = pulseIn(PIN_DISTANCE_ECHO, PIN_DISTANCE_TRIG);
+  long distanceCm = duration * 17 / 1000;
+
+  result = distanceCm;
+  return result;
+}
+
 /*
-bool sendMessage(String message){
+bool sendMessage(String message){  // 메시지 보내는 함수
   bool result = false;
   message = "[E]_" + message + "_";
   customCharacteristic.writeValue(message.c_str());
@@ -142,7 +221,7 @@ bool sendMessage(String message){
 }
 */
 
-String receiveMessage(){
+String receiveMessage(){  // 메시지 받는 함수
   String result = "";
 
   if(!customCharacteristic.written()){
@@ -197,7 +276,7 @@ String receiveMessage(){
 
 //
 
-int split(String input, char delimiter, String result[], int maxParts) {
+int split(String input, char delimiter, String result[], int maxParts){  // 문자열을 배열로 분할하는 함수
   int count = 0;
   int startIndex = 0;
   int delimIndex;
