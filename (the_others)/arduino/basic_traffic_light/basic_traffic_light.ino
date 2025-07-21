@@ -28,3 +28,4 @@ void loop(){  // 무한 반복 실행
   digitalWrite(PIN_LED_RED, HIGH);
   delay(2000);
 }
+

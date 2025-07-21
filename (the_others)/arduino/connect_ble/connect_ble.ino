@@ -146,14 +146,16 @@ void execute(){  // 설정한 동작 유형대로 실행하는 함수
 
   initialize();
   
-  if(operationType == "A"){
+  if(operationType == "A"){  // 버튼 A를 눌렀을 때의 동작
+    // 2개의 LED를 모두 ON
     digitalWrite(PIN_BASIC_LED_RED, HIGH);
     digitalWrite(PIN_BASIC_LED_GREEN, HIGH);
   }
-  else if(operationType == "B"){
+  else if(operationType == "B"){  // 버튼 B를 눌렀을 때의 동작
     long distanceCm = getDistanceCm();
 
     if(distanceCm < 10){  // 거리 센서의 10cm 이내에 물체가 있으면
+      // RGB LED를 조종
       analogWrite(PIN_RGB_LED_RED, 255);
       analogWrite(PIN_RGB_LED_GREEN, 0);
       analogWrite(PIN_RGB_LED_BLUE, 0);
@@ -170,6 +172,7 @@ void execute(){  // 설정한 동작 유형대로 실행하는 함수
       delay(100);
     }
     else{
+      // Basic LED 2개를 조종
       digitalWrite(PIN_BASIC_LED_RED, HIGH);
       digitalWrite(PIN_BASIC_LED_GREEN, LOW);
       delay(100);
@@ -179,10 +182,12 @@ void execute(){  // 설정한 동작 유형대로 실행하는 함수
       delay(100);
     }
   }
-  else if(operationType == "C"){
+  else if(operationType == "C"){  // 버튼 C를 눌렀을 때의 동작
+    // 서보 모터의 회전 각도를 10도로 변경
     mini_servo.write(10);
     delay(500);
 
+    // 서보 모터의 회전 각도를 20도로 변경
     mini_servo.write(20);
     delay(500);
 
@@ -194,7 +199,7 @@ void execute(){  // 설정한 동작 유형대로 실행하는 함수
   }
 }
 
-long getDistanceCm(){  // 거리 센서와의 거리 구하는 함수
+long getDistanceCm(){  // 거리 센서에서 거리를 잰 후 cm 단위로 알려주는 함수
   long result = -1;
   digitalWrite(PIN_DISTANCE_TRIG, LOW);
   delayMicroseconds(2);
